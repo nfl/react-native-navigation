@@ -63,7 +63,7 @@ static NSString* const onNavigationButtonPressed	= @"RNN.onNavigationButtonPress
 # pragma mark private
 
 -(void)send:(NSString *)eventName body:(id)body {
-    if ([eventName isEqualToString:containerDidDisappear] && self.bridge == nil) {
+    if ([eventName isEqualToString:componentDidDisappear] && self.bridge == nil) {
         return;
     }
 	[self sendEventWithName:eventName body:body];
