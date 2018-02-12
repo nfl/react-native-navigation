@@ -41,7 +41,8 @@
     "pretest-e2e-ios": "npm run build",
     "test-e2e-ios": "node ./scripts/test.e2e.ios.js",
     "test-all": "node ./scripts/test.all.js",
-    "release": "node ./scripts/release.js"
+    "release": "node ./scripts/release.js",
+    "prepublish": "npm run build"
   },
   "peerDependencies": {
     "react": "*",
