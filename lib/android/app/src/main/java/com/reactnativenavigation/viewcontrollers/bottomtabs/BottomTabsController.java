@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
@@ -28,27 +30,34 @@ import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 import static android.widget.RelativeLayout.ALIGN_PARENT_BOTTOM;
 
 public class BottomTabsController extends ParentController implements AHBottomNavigation.OnTabSelectedListener, NavigationOptionsListener {
-	private BottomTabs bottomTabs;
-	private List<ViewController> tabs = new ArrayList<>();
+    private FrameLayout tabContentContainer;
+    private BottomTabs bottomTabs;
+    private List<ViewController> tabs = new ArrayList<>();
     private ImageLoader imageLoader;
     private BottomTabFinder bottomTabFinder = new BottomTabFinder();
 
     public BottomTabsController(final Activity activity, ImageLoader imageLoader, final String id, Options initialOptions) {
-		super(activity, id, initialOptions);
+        super(activity, id, initialOptions);
         this.imageLoader = imageLoader;
     }
 
-	@NonNull
-	@Override
-	protected ViewGroup createView() {
-		RelativeLayout root = new RelativeLayout(getActivity());
-		bottomTabs = new BottomTabs(getActivity());
+    @NonNull
+    @Override
+    protected ViewGroup createView() {
+        LinearLayout root = new LinearLayout(getActivity());
+        root.setOrientation(LinearLayout.VERTICAL);
+
+        tabContentContainer = new FrameLayout(getActivity());
+        LinearLayout.LayoutParams contentParams = new LinearLayout.LayoutParams(MATCH_PARENT, 0, 1);
+        root.addView(tabContentContainer, contentParams);
+
+        bottomTabs = new BottomTabs(getActivity());
         bottomTabs.setOnTabSelectedListener(this);
-		RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT);
-		lp.addRule(ALIGN_PARENT_BOTTOM);
-		root.addView(bottomTabs, lp);
-		return root;
-	}
+        LinearLayout.LayoutParams tabParams = new LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT);
+        root.addView(bottomTabs, tabParams);
+
+        return root;
+    }
 
     @Override
     public void applyOptions(Options options) {
@@ -96,7 +105,7 @@ public class BottomTabsController extends ParentController implements AHBottomNa
         selectTabAtIndex(index);
         return true;
 	}
-	
+
 	public void setTabs(final List<ViewController> tabs) {
 		if (tabs.size() > 5) {
 			throw new RuntimeException("Too many tabs!");
@@ -134,14 +143,14 @@ public class BottomTabsController extends ParentController implements AHBottomNa
 		return bottomTabs.getCurrentItem();
 	}
 
-	@NonNull
-	@Override
-	public Collection<ViewController> getChildControllers() {
-		return tabs;
-	}
+    @NonNull
+    @Override
+    public Collection<ViewController> getChildControllers() {
+        return tabs;
+    }
 
-	@Override
-	public void mergeOptions(Options options) {
+    @Override
+    public void mergeOptions(Options options) {
         this.options = this.options.mergeWith(options);
         new BottomTabsOptionsPresenter(bottomTabs, bottomTabFinder).present(this.options);
     }
