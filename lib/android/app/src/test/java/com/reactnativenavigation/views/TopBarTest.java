@@ -5,13 +5,15 @@ import android.view.MenuItem;
 
 import com.reactnativenavigation.BaseTest;
 import com.reactnativenavigation.anim.TopBarAnimator;
+import com.reactnativenavigation.mocks.TitleBarReactViewCreatorMock;
+import com.reactnativenavigation.mocks.TopBarBackgroundViewCreatorMock;
 import com.reactnativenavigation.mocks.TopBarButtonCreatorMock;
-import com.reactnativenavigation.parse.params.Bool;
+import com.reactnativenavigation.parse.AnimationOptions;
 import com.reactnativenavigation.parse.params.Button;
-import com.reactnativenavigation.parse.params.NullBool;
 import com.reactnativenavigation.parse.params.Text;
 import com.reactnativenavigation.utils.TitleBarHelper;
 import com.reactnativenavigation.viewcontrollers.TopBarButtonController;
+import com.reactnativenavigation.views.topbar.TopBar;
 
 import org.junit.Test;
 
@@ -30,6 +32,7 @@ public class TopBarTest extends BaseTest {
     private ArrayList<Button> rightButtons;
     private TopBarButtonController.OnClickListener onClickListener;
 
+    @SuppressWarnings("Convert2Lambda")
     @Override
     public void beforeEach() {
         onClickListener = spy(new TopBarButtonController.OnClickListener() {
@@ -38,8 +41,8 @@ public class TopBarTest extends BaseTest {
                 Log.i("TopBarTest", "onPress: " + buttonId);
             }
         });
-        StackLayout parent = new StackLayout(newActivity(), new TopBarButtonCreatorMock(), this.onClickListener);
-        uut = new TopBar(newActivity(), new TopBarButtonCreatorMock(), this.onClickListener, parent);
+        StackLayout parent = new StackLayout(newActivity(), new TopBarButtonCreatorMock(), new TitleBarReactViewCreatorMock(), new TopBarBackgroundViewCreatorMock(), this.onClickListener, null);
+        uut = new TopBar(newActivity(), new TopBarButtonCreatorMock(), new TitleBarReactViewCreatorMock(), new TopBarBackgroundViewCreatorMock(), this.onClickListener, parent);
         animator = spy(new TopBarAnimator(uut));
         uut.setAnimator(animator);
         leftButton = createLeftButton();
@@ -76,21 +79,24 @@ public class TopBarTest extends BaseTest {
     }
 
     @Test
-    public void hide_animateHideUnlessSpecifiedOtherwise() throws Exception {
-        uut.hide(new NullBool());
-        verify(animator, times(1)).hide();
+    public void hide_animate() throws Exception {
+        AnimationOptions options = new AnimationOptions();
+        uut.hideAnimate(options);
+        verify(animator, times(1)).hide(options, null);
     }
 
     @Test
-    public void show_animateShowUnlessSpecifiedOtherwise() throws Exception {
-        uut.hide(new Bool(false));
-        uut.show(new NullBool());
-        verify(animator, times(1)).show();
+    public void show_animate() throws Exception {
+        AnimationOptions options = new AnimationOptions();
+        uut.hide();
+        uut.showAnimate(options);
+        verify(animator, times(1)).show(options);
     }
 
     @Test
     public void button_TitleBarButtonOnClickInvoked() throws Exception {
-        uut.setButtons(new ArrayList<>(), rightButtons);
+        uut.setLeftButtons(new ArrayList<>());
+        uut.setRightButtons(rightButtons);
         for (int i = 0; i < rightButtons.size(); i++) {
             Button rightButton = rightButtons.get(i);
             TitleBarHelper.getRightButton(uut.getTitleBar(), i).callOnClick();

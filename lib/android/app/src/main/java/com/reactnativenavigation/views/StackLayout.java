@@ -6,11 +6,15 @@ import android.support.annotation.RestrictTo;
 import android.support.v4.view.ViewPager;
 import android.widget.RelativeLayout;
 
+import com.reactnativenavigation.interfaces.ChildDisappearListener;
 import com.reactnativenavigation.parse.Options;
 import com.reactnativenavigation.presentation.OptionsPresenter;
 import com.reactnativenavigation.utils.CompatUtils;
 import com.reactnativenavigation.viewcontrollers.ReactViewCreator;
 import com.reactnativenavigation.viewcontrollers.TopBarButtonController;
+import com.reactnativenavigation.views.titlebar.TitleBarReactViewCreator;
+import com.reactnativenavigation.views.topbar.TopBar;
+import com.reactnativenavigation.views.topbar.TopBarBackgroundViewCreator;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
@@ -18,25 +22,33 @@ import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 @SuppressLint("ViewConstructor")
 public class StackLayout extends RelativeLayout {
     private TopBar topBar;
+    private String stackId;
+    private final OptionsPresenter optionsPresenter;
 
-    public StackLayout(Context context, ReactViewCreator topBarButtonCreator, TopBarButtonController.OnClickListener topBarButtonClickListener) {
+    public StackLayout(Context context, ReactViewCreator topBarButtonCreator, TitleBarReactViewCreator titleBarReactViewCreator, TopBarBackgroundViewCreator topBarBackgroundViewCreator, TopBarButtonController.OnClickListener topBarButtonClickListener, String stackId) {
         super(context);
-        topBar = new TopBar(context, topBarButtonCreator, topBarButtonClickListener, this);
-        topBar.setId(CompatUtils.generateViewId());
-        addView(topBar, MATCH_PARENT, WRAP_CONTENT);
+        this.stackId = stackId;
+        createLayout(topBarButtonCreator, titleBarReactViewCreator, topBarBackgroundViewCreator, topBarButtonClickListener);
+        optionsPresenter = new OptionsPresenter(topBar);
         setContentDescription("StackLayout");
     }
 
-    public void applyOptions(Options options) {
-        new OptionsPresenter(topBar).applyOrientation(options.orientationOptions);
+    private void createLayout(ReactViewCreator buttonCreator, TitleBarReactViewCreator titleBarReactViewCreator, TopBarBackgroundViewCreator BackgroundViewCreator, TopBarButtonController.OnClickListener topBarButtonClickListener) {
+        topBar = new TopBar(getContext(), buttonCreator, titleBarReactViewCreator, BackgroundViewCreator, topBarButtonClickListener, this);
+        topBar.setId(CompatUtils.generateViewId());
+        addView(topBar, MATCH_PARENT, WRAP_CONTENT);
     }
 
-    public void applyOptions(Options options, Component component) {
-        new OptionsPresenter(topBar, component).applyOptions(options);
+    public void applyChildOptions(Options options) {
+        optionsPresenter.applyOrientation(options.orientationOptions);
     }
 
-    public void onChildWillDisappear(Options disappearing, Options appearing) {
-        new OptionsPresenter(topBar).onChildWillDisappear(disappearing, appearing);
+    public void applyChildOptions(Options options, Component child) {
+        optionsPresenter.applyChildOptions(options, child);
+    }
+
+    public void onChildWillDisappear(Options disappearing, Options appearing, ChildDisappearListener childDisappearListener) {
+        optionsPresenter.onChildWillDisappear(disappearing, appearing, childDisappearListener);
     }
 
     public void clearOptions() {
@@ -56,8 +68,11 @@ public class StackLayout extends RelativeLayout {
         return topBar;
     }
 
-    @RestrictTo(RestrictTo.Scope.TESTS)
-    public void setTopBar(TopBar topBar) {
-        this.topBar = topBar;
+    public void mergeChildOptions(Options options, Component child) {
+        optionsPresenter.mergeChildOptions(options, child);
+    }
+
+    public String getStackId() {
+        return stackId;
     }
 }
