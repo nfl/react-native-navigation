@@ -77,7 +77,7 @@ public class Navigator extends ParentController implements ModalListener {
         root = viewController;
         View view = viewController.getView();
 
-        AnimationsOptions animationsOptions = viewController.options.animationsOptions;
+        AnimationsOptions animationsOptions = viewController.options.animations;
         getView().addView(view);
         if (animationsOptions.startApp.hasValue()) {
             new NavigationAnimator(viewController.getActivity(), animationsOptions)
@@ -100,7 +100,7 @@ public class Navigator extends ParentController implements ModalListener {
         return defaultOptions;
     }
 
-    public void setOptions(final String componentId, Options options) {
+    public void mergeOptions(final String componentId, Options options) {
         ViewController target = findControllerById(componentId);
         if (target instanceof NavigationOptionsListener) {
             ((NavigationOptionsListener) target).mergeOptions(options);

@@ -62,7 +62,7 @@
 }
 
 -(void)testDynamicStylesMergeWithStaticStyles {
-	RNNNavigationOptions* initialOptions = [[RNNNavigationOptions alloc] init];
+	RNNNavigationOptions* initialOptions = [[RNNNavigationOptions alloc] initWithDict:@{}];
 	initialOptions.topBar.title.text = @"the title";
 	RNNRootViewController* vc = [[RNNRootViewController alloc] initWithName:@"name"
 																withOptions:initialOptions
@@ -77,10 +77,10 @@
 	[self.store setReadyToReceiveCommands:true];
 	[self.store setComponent:vc componentId:@"componentId"];
 	
-	NSDictionary* dictFromJs = @{@"topBar": @{@"backgroundColor" :@(0xFFFF0000)}};
+	NSDictionary* dictFromJs = @{@"topBar": @{@"background" : @{@"color" : @(0xFFFF0000)}}};
 	UIColor* expectedColor = [UIColor colorWithRed:1 green:0 blue:0 alpha:1];
 
-	[self.uut setOptions:@"componentId" options:dictFromJs completion:^{
+	[self.uut mergeOptions:@"componentId" options:dictFromJs completion:^{
 		XCTAssertTrue([vc.navigationItem.title isEqual:@"the title"]);
 		XCTAssertTrue([nav.navigationBar.barTintColor isEqual:expectedColor]);
 	}];

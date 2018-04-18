@@ -5,7 +5,11 @@
 #import "RNNCustomTitleView.h"
 #import "RNNPushAnimation.h"
 
-@interface RNNRootViewController()
+@interface RNNRootViewController() {
+	UIView* _customTitleView;
+	UIView* _customTopBar;
+	UIView* _customTopBarBackground;
+}
 @property (nonatomic, strong) NSString* componentName;
 @property (nonatomic) BOOL _statusBarHidden;
 @property (nonatomic) BOOL isExternalComponent;
@@ -48,6 +52,7 @@
 
 -(void)viewWillAppear:(BOOL)animated{
 	[super viewWillAppear:animated];
+  
 	if (!self._optionsApplied) {
 		[self.options applyOn:self];
 	}
@@ -83,50 +88,52 @@
 }
 
 - (void)setCustomNavigationTitleView {
-	if (self.options.topBar.title.component.name) {
-		RCTRootView *reactView = (RCTRootView*)[_creator createRootViewFromComponentOptions:self.options.topBar.title.component];
-
-		RNNCustomTitleView *titleView = [[RNNCustomTitleView alloc] initWithFrame:self.navigationController.navigationBar.bounds subView:reactView alignment:self.options.topBar.title.component.alignment];
-        reactView.backgroundColor = UIColor.clearColor;
-		titleView.backgroundColor = UIColor.clearColor;
-		self.navigationItem.titleView = titleView;
-	} if ([self.navigationItem.title isKindOfClass:[RNNCustomTitleView class]]) {
-		self.navigationItem.title = nil;
+	if (!_customTitleView) {
+		if (self.options.topBar.title.component.name) {
+			RCTRootView *reactView = (RCTRootView*)[_creator createRootViewFromComponentOptions:self.options.topBar.title.component];
+			
+			_customTitleView = [[RNNCustomTitleView alloc] initWithFrame:self.navigationController.navigationBar.bounds subView:reactView alignment:self.options.topBar.title.component.alignment];
+			reactView.backgroundColor = UIColor.clearColor;
+			_customTitleView.backgroundColor = UIColor.clearColor;
+			self.navigationItem.titleView = _customTitleView;
+		} if ([self.navigationItem.title isKindOfClass:[RNNCustomTitleView class]] && !_customTitleView) {
+			self.navigationItem.title = nil;
+		}
 	}
 }
 
 - (void)setCustomNavigationBarView {
-	if (self.options.topBar.component.name) {
-		RCTRootView *reactView = (RCTRootView*)[_creator createRootViewFromComponentOptions:self.options.topBar.component];
-
-		RNNCustomTitleView *titleView = [[RNNCustomTitleView alloc] initWithFrame:self.navigationController.navigationBar.bounds subView:reactView alignment:@"fill"];
-		reactView.backgroundColor = UIColor.clearColor;
-		titleView.backgroundColor = UIColor.clearColor;
-		[self.navigationController.navigationBar addSubview:titleView];
-	} else if ([[self.navigationController.navigationBar.subviews lastObject] isKindOfClass:[RNNCustomTitleView class]]) {
-		[[self.navigationController.navigationBar.subviews lastObject] removeFromSuperview];
+	if (!_customTopBar) {
+		if (self.options.topBar.component.name) {
+			RCTRootView *reactView = (RCTRootView*)[_creator createRootViewFromComponentOptions:self.options.topBar.component];
+			
+			_customTopBar = [[RNNCustomTitleView alloc] initWithFrame:self.navigationController.navigationBar.bounds subView:reactView alignment:@"fill"];
+			reactView.backgroundColor = UIColor.clearColor;
+			_customTopBar.backgroundColor = UIColor.clearColor;
+			[self.navigationController.navigationBar addSubview:_customTopBar];
+		} else if ([[self.navigationController.navigationBar.subviews lastObject] isKindOfClass:[RNNCustomTitleView class]] && !_customTopBar) {
+			[[self.navigationController.navigationBar.subviews lastObject] removeFromSuperview];
+		}
 	}
 }
 
 - (void)setCustomNavigationComponentBackground {
-    if ([[self.navigationController.navigationBar.subviews objectAtIndex:1] isKindOfClass:[RNNCustomTitleView class]]) {
-        [[self.navigationController.navigationBar.subviews objectAtIndex:1] removeFromSuperview];
-    }
-    
-	if (self.options.topBar.background.component.name) {
-        RCTRootView *reactView = (RCTRootView*)[_creator createRootViewFromComponentOptions:self.options.topBar.background.component];
-
-        RNNCustomTitleView *titleView = [[RNNCustomTitleView alloc] initWithFrame:self.navigationController.navigationBar.bounds subView:reactView alignment:@"fill"];
-        [self.navigationController.navigationBar insertSubview:titleView atIndex:1];
+	if (!_customTopBarBackground) {
+		if (self.options.topBar.background.component.name) {
+			RCTRootView *reactView = (RCTRootView*)[_creator createRootViewFromComponentOptions:self.options.topBar.background.component];
+			
+			_customTopBarBackground = [[RNNCustomTitleView alloc] initWithFrame:self.navigationController.navigationBar.bounds subView:reactView alignment:@"fill"];
+			[self.navigationController.navigationBar insertSubview:_customTopBarBackground atIndex:1];
+			self.navigationController.navigationBar.clipsToBounds = YES;
+		} else if ([[self.navigationController.navigationBar.subviews objectAtIndex:1] isKindOfClass:[RNNCustomTitleView class]]) {
+			[[self.navigationController.navigationBar.subviews objectAtIndex:1] removeFromSuperview];
+			self.navigationController.navigationBar.clipsToBounds = NO;
+		}
 	}
 }
 
 -(BOOL)isCustomTransitioned {
 	return self.options.customTransition.animations != nil;
-}
-
-- (BOOL)isAnimated {
-	return self.options.animated ? [self.options.animated boolValue] : YES;
 }
 
 - (BOOL)isCustomViewController {
@@ -176,9 +183,9 @@
 {
 	if (self.animator) {
 		return self.animator;
-	} else if (operation == UINavigationControllerOperationPush && self.options.animations.push) {
+	} else if (operation == UINavigationControllerOperationPush && self.options.animations.push.hasCustomAnimation) {
 		return [[RNNPushAnimation alloc] initWithScreenTransition:self.options.animations.push];
-	} else if (operation == UINavigationControllerOperationPop && self.options.animations.pop) {
+	} else if (operation == UINavigationControllerOperationPop && self.options.animations.pop.hasCustomAnimation) {
 		return [[RNNPushAnimation alloc] initWithScreenTransition:self.options.animations.pop];
 	} else {
 		return nil;

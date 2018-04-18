@@ -67,11 +67,11 @@ public class OptionsMergingTest extends BaseTest {
         verify(topBar, times(0)).setRightButtons(any());
         verify(topBar, times(0)).setLeftButtons(any());
 
-        options.topBarOptions.rightButtons = new ArrayList<>();
+        options.topBar.rightButtons = new ArrayList<>();
         uut.mergeChildOptions(options, child);
         verify(topBar, times(1)).setRightButtons(any());
 
-        options.topBarOptions.leftButtons = new ArrayList<>();
+        options.topBar.leftButtons = new ArrayList<>();
         uut.mergeChildOptions(options, child);
         verify(topBar, times(1)).setLeftButtons(any());
     }
@@ -89,22 +89,22 @@ public class OptionsMergingTest extends BaseTest {
         titleOptions.color = new Color(0);
         titleOptions.fontSize = new Fraction(1.0f);
         titleOptions.fontFamily = Typeface.DEFAULT_BOLD;
-        options.topBarOptions.title = titleOptions;
+        options.topBar.title = titleOptions;
         SubtitleOptions subtitleOptions = new SubtitleOptions();
         subtitleOptions.text = new Text("Sub");
         subtitleOptions.color = new Color(1);
-        options.topBarOptions.subtitle = subtitleOptions;
-        options.topBarOptions.background.color = new Color(0);
-        options.topBarOptions.testId = new Text("test123");
-        options.topBarOptions.animate = new Bool(false);
-        options.topBarOptions.visible = new Bool(false);
-        options.topBarOptions.drawBehind = new Bool(false);
-        options.topBarOptions.hideOnScroll = new Bool(false);
+        options.topBar.subtitle = subtitleOptions;
+        options.topBar.background.color = new Color(0);
+        options.topBar.testId = new Text("test123");
+        options.topBar.animate = new Bool(false);
+        options.topBar.visible = new Bool(false);
+        options.topBar.drawBehind = new Bool(false);
+        options.topBar.hideOnScroll = new Bool(false);
         uut.mergeChildOptions(options, child);
 
         assertTopBarOptions(1);
 
-        options.topBarOptions.drawBehind = new Bool(true);
+        options.topBar.drawBehind = new Bool(true);
         uut.mergeChildOptions(options, child);
         verify(child, times(1)).drawBehindTopBar();
     }

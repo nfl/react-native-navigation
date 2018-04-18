@@ -58,14 +58,14 @@ public class StackController extends ParentController<StackLayout> {
                         child
                 )
         );
-        animator.setOptions(options.animationsOptions);
+        animator.setOptions(options.animations);
     }
 
     @Override
     public void mergeChildOptions(Options options, Component child) {
         super.mergeChildOptions(options, child);
         getView().mergeChildOptions(options, child);
-        animator.mergeOptions(options.animationsOptions);
+        animator.mergeOptions(options.animations);
         if (options.fabOptions.hasValue() && child instanceof ReactComponent) {
             fabOptionsPresenter.mergeOptions(options.fabOptions, (ReactComponent) child, getView());
         }
@@ -96,7 +96,7 @@ public class StackController extends ParentController<StackLayout> {
         getView().addView(child.getView(), MATCH_PARENT, MATCH_PARENT);
 
         if (toRemove != null) {
-            if (child.options.animated.isTrueOrUndefined()) {
+            if (child.options.animations.push.enable.isTrueOrUndefined()) {
                 animator.push(child.getView(), () -> {
                     getView().removeView(toRemove.getView());
                     listener.onSuccess(child.getId());
@@ -141,9 +141,9 @@ public class StackController extends ParentController<StackLayout> {
         disappearing.onViewWillDisappear();
         appearing.onViewWillAppear();
         getView().addView(appearing.getView(), 0);
-        getView().onChildWillDisappear(disappearing.options, appearing.options);
+        getView().onChildWillAppear(appearing, disappearing);
 
-        if (disappearing.options.animated.isTrueOrUndefined()) {
+        if (disappearing.options.animations.pop.enable.isTrueOrUndefined()) {
             animator.pop(disappearing.getView(), () -> finishPopping(disappearing, listener));
         } else {
             finishPopping(disappearing, listener);

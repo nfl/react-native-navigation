@@ -57,6 +57,7 @@ public class TopBarAnimator {
                 topBar.setVisibility(View.VISIBLE);
             }
         });
+        topBar.resetAnimationOptions();
         showAnimator.start();
     }
 

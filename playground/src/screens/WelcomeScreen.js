@@ -302,7 +302,11 @@ class WelcomeScreen extends Component {
       component: {
         name: 'navigation.playground.OptionsScreen',
         options: {
-          animated: false
+          animations: {
+            push: {
+              enable: false
+            }
+          }
         }
       }
     });
@@ -413,7 +417,7 @@ class WelcomeScreen extends Component {
         ]
       }
     });
-    Navigation.setOptions('my unique id', {
+    Navigation.mergeOptions('my unique id', {
       topBar: {
         title: {
           text: 'User provided id'

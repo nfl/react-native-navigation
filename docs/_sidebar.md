@@ -2,10 +2,10 @@
   - [Installing](/docs/Installing)
   - [Working Locally](/docs/WorkingLocally)
   - [Usage](/docs/Usage)
-- API
+- Guide
   - [Top Level](/docs/top-level-api)
   - [Screen](/docs/screen-api)
-  - [Layout types](/docs/layout-types)
+  - [Layout Types](/docs/layout-types)
   - [Styling](/docs/styling)
 - Migration from v1
   - [Top Level](/docs/top-level-api-migration)

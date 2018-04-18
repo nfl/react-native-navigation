@@ -26,7 +26,6 @@ extern const NSInteger TOP_BAR_TRANSPARENT_TAG;
 @property (nonatomic, strong) RNNTransitionsOptions* animations;
 
 
-@property (nonatomic, strong) NSNumber* animated;
 @property (nonatomic, strong) NSNumber* statusBarHidden;
 @property (nonatomic, strong) NSNumber* screenBackgroundColor;
 @property (nonatomic, strong) NSMutableDictionary* originalTopBarImages;
@@ -36,8 +35,9 @@ extern const NSInteger TOP_BAR_TRANSPARENT_TAG;
 @property (nonatomic, strong) NSNumber* statusBarHideWithTopBar;
 @property (nonatomic, strong) NSString* statusBarStyle;
 @property (nonatomic, strong) NSNumber* popGesture;
-@property (nonatomic, strong) UIImage* backgroundImage;
-@property (nonatomic, strong) UIImage* rootBackgroundImage;
+@property (nonatomic, strong) NSDictionary* backgroundImage;
+@property (nonatomic, strong) NSDictionary* rootBackgroundImage;
+@property (nonatomic, strong) NSString* modalPresentationStyle;
 
 - (UIInterfaceOrientationMask)supportedOrientations;
 

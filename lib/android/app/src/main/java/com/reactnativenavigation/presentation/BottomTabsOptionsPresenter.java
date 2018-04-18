@@ -20,7 +20,7 @@ public class BottomTabsOptionsPresenter {
     }
 
     public void present(Options options) {
-        applyBottomTabsOptions(options.bottomTabsOptions, options.animationsOptions);
+        applyBottomTabsOptions(options.bottomTabsOptions, options.animations);
     }
 
     public void present(Options options, int tabIndex) {
@@ -38,7 +38,8 @@ public class BottomTabsOptionsPresenter {
             bottomTabs.setBackgroundColor(options.backgroundColor.get());
         }
         if (options.currentTabIndex.hasValue()) {
-            bottomTabs.setCurrentItem(options.currentTabIndex.get());
+            int tabIndex = options.currentTabIndex.get();
+            if (tabIndex >= 0) bottomTabs.setCurrentItem(tabIndex);
         }
         if (options.testId.hasValue()) {
             bottomTabs.setTag(options.testId.get());

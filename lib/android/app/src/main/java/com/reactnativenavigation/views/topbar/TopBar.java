@@ -180,6 +180,7 @@ public class TopBar extends AppBarLayout implements ScrollEventListener.ScrollAw
 
     public void show() {
         if (visible() || animator.isAnimatingShow()) return;
+        resetAnimationOptions();
         setVisibility(View.VISIBLE);
     }
 
@@ -239,5 +240,16 @@ public class TopBar extends AppBarLayout implements ScrollEventListener.ScrollAw
     @RestrictTo(RestrictTo.Scope.TESTS)
     public TextView getTitleTextView() {
         return titleBar.findTitleTextView();
+    }
+
+    public void resetAnimationOptions() {
+        setTranslationY(0);
+        setTranslationX(0);
+        setAlpha(1);
+        setScaleY(1);
+        setScaleX(1);
+        setRotationX(0);
+        setRotationY(0);
+        setRotation(0);
     }
 }
