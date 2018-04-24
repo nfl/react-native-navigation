@@ -83,6 +83,10 @@
 	[self setCustomNavigationComponentBackground];
 }
 
+- (void)applyModalOptions {
+    [self.options applyModalOptions:self];
+}
+
 - (void)mergeOptions:(NSDictionary *)options {
 	[self.options mergeIfEmptyWith:options];
 }
