@@ -1,6 +1,6 @@
 {
   "name": "@nfl/react-native-navigation",
-  "version": "2.0.0-pre.75626fe0",
+  "version": "2.0.0-pre.5af59bc7",
   "description": "React Native Navigation - truly native navigation for iOS and Android",
   "license": "MIT",
   "nativePackage": true,
@@ -41,7 +41,8 @@
     "test-e2e-android": "node ./scripts/test-e2e --android",
     "pretest-e2e-ios": "npm run build",
     "test-e2e-ios": "node ./scripts/test-e2e --ios",
-    "test-all": "node ./scripts/test-all",
+    "test-all": "node ./scripts/test.all.js",
+    "prepublish": "npm run build",
     "prerelease": "npm run build",
     "release": "node ./scripts/release",
     "local-docs": "node ./scripts/local-docs",
@@ -60,10 +61,12 @@
     "@types/react-test-renderer": "16.x.x",
     "lodash": "4.x.x",
     "prop-types": "15.x.x",
+    "react-lifecycles-compat": "2.0.0",
     "tslib": "1.x.x"
   },
   "devDependencies": {
     "detox": "7.x.x",
+    "handlebars": "4.x.x",
     "jest": "22.x.x",
     "mocha": "4.x.x",
     "react": "16.2.0",
@@ -74,11 +77,10 @@
     "remx": "2.x.x",
     "semver": "5.x.x",
     "shell-utils": "1.x.x",
+    "ts-node": "5.x.x",
     "tslint": "5.x.x",
-    "typescript": "2.7.x",
     "typedoc": "0.x.x",
-    "handlebars": "4.x.x",
-    "ts-node": "5.x.x"
+    "typescript": "2.7.x"
   },
   "babel": {
     "env": {
