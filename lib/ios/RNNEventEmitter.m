@@ -49,17 +49,6 @@ static NSString* const onNavigationButtonPressed	= @"RNN.onNavigationButtonPress
 	}
 }
 
-- (void)addListener:(NSString *)eventName {
-	[super addListener:eventName];
-	if ([eventName isEqualToString:onAppLaunched]) {
-		_appLaunchedListenerCount++;
-		if (_appLaunchedEventDeferred) {
-			_appLaunchedEventDeferred = FALSE;
-			[self sendOnAppLaunched];
-		}
-	}
-}
-
 # pragma mark private
 
 -(void)send:(NSString *)eventName body:(id)body {
