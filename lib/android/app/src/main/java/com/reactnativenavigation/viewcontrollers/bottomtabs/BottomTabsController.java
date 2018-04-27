@@ -77,8 +77,8 @@ public class BottomTabsController extends ParentController implements AHBottomNa
     }
 
     @Override
-	public boolean handleBack() {
-		return !tabs.isEmpty() && tabs.get(bottomTabs.getCurrentItem()).handleBack();
+	public boolean handleBack(CommandListener listener) {
+		return !tabs.isEmpty() && tabs.get(bottomTabs.getCurrentItem()).handleBack(listener);
 	}
 
     @Override
@@ -96,7 +96,7 @@ public class BottomTabsController extends ParentController implements AHBottomNa
         selectTabAtIndex(index);
         return true;
 	}
-
+	
 	public void setTabs(final List<ViewController> tabs) {
 		if (tabs.size() > 5) {
 			throw new RuntimeException("Too many tabs!");
