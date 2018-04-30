@@ -4,6 +4,7 @@
 #import "RNNOverlayManager.h"
 #import "RNNNavigationOptions.h"
 #import "RNNRootViewController.h"
+#import "RNNTabBarController.h"
 #import "React/RCTUIManager.h"
 
 @implementation RNNCommandsHandler {
@@ -119,12 +120,13 @@
 	[CATransaction commit];
 }
 
--(void) showModal:(NSDictionary*)layout completion:(RNNTransitionCompletionBlock)completion {
+-(void)showModal:(NSDictionary*)layout completion:(RNNTransitionComponentIdCompletionBlock)completion {
 	[self assertReady];
 	
 	UIViewController<RNNRootViewProtocol> *newVc = [_controllerFactory createLayoutAndSaveToStore:layout];
+    NSString *componentId = [_controllerFactory componentIdForViewController:newVc];
 	[_modalManager showModal:newVc completion:^{
-		completion();
+		completion(componentId);
 	}];
 }
 
@@ -165,6 +167,16 @@
 	[_overlayManager dismissOverlay:componentId completion:^{	
 		completion();
 	}];
+}
+
+-(void)setTabIndex:(NSString *)componentId index:(int)index completion:(RNNTransitionCompletionBlock)completion {
+    [self assertReady];
+    
+    UIViewController *viewController = [_store findComponentForId:componentId];
+    if ([viewController isKindOfClass:[RNNTabBarController class]]) {
+        RNNTabBarController *tabVc = (RNNTabBarController *)viewController;
+        tabVc.selectedIndex = index;
+    }
 }
 
 #pragma mark - private
